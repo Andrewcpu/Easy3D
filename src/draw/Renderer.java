@@ -2,10 +2,8 @@ package draw;
 
 import constructs.Camera;
 import constructs.Point3D;
-import world.Cube;
-import world.Face;
+import world.*;
 import world.Shape;
-import world.World;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -44,13 +42,14 @@ public class Renderer {
             faces.addAll(Arrays.asList(cube.getFaces()));
 
         Object[] arr = faces.toArray();
+        if(arr == null) return;
         Arrays.sort(arr);
 
         Polygon selectedPolygon = null;
         Face selectedFace = null;
         selectedShape = null;
 
-        for(int i = faces.size() - 1; i > 0; i-- )
+        for(int i = faces.size() - 1; i >= 0; i-- )
         {
             Face face = (Face)arr[i];
             if(!face.isVisible())
@@ -135,9 +134,18 @@ public class Renderer {
 
         g.setColor(Color.RED);
         g.fillOval(minSize / 2 * mapSize - 3, minSize / 2 * mapSize - 3, 6, 6);
+        int pointerSize = 20;
+        double x = Math.cos(Camera.getInstance().getRotationHorizontal() - Math.PI / 2) * pointerSize;
+        double y = Math.sin(Camera.getInstance().getRotationHorizontal() - Math.PI / 2) * pointerSize;
+        g.drawLine(minSize / 2 * mapSize, minSize / 2 * mapSize, minSize / 2 * mapSize + (int)x, minSize / 2 * mapSize - (int)y);
+
+
 
         g.setColor(Color.BLACK);
         g.drawRect(0,0, minSize * mapSize, minSize * mapSize);
+
+        g.setColor(Color.WHITE);
+        g.drawString(Camera.getInstance().getLocation().clone().divide(World.getInstance().size).toString(), 10, minSize * mapSize + 20);
 
     }
 

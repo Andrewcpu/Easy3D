@@ -187,4 +187,9 @@ public class Point3D {
         return 10.0 * Math.tan(Math.toRadians(Camera.FOV / 2.0)) * 2;
     }
 
+    @Override
+    public String toString(){
+        return (int)getX() + ", " + (int)getY() + ", " + (int)getZ();
+    }
+
 }

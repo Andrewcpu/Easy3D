@@ -1,7 +1,7 @@
 package world;
 
 import constructs.Camera;
-import constructs.ImprovedNoise;
+import constructs.OpenSimplexNoise;
 import constructs.Point3D;
 import world.blocks.CrystalBlock;
 import world.blocks.CrystalGrassBlock;
@@ -50,11 +50,15 @@ public class World {
     }
 
     public void generate(){
-        int mapSize = 6;
+        cubes.clear();
+        crystalPyramids.clear();
+        int mapSize = 10;
 
         for(int x = -mapSize; x<mapSize; x++){
             for(int z = -mapSize; z<mapSize; z++){
-                CrystalGrassBlock crystalGrassBlock = new CrystalGrassBlock(new Point3D(x * World.getInstance().size + 1, 0, z * World.getInstance().size + 1), World.getInstance().size);
+                double aY = new OpenSimplexNoise().eval(x/5.0,z/5.0) * World.getInstance().size;
+                System.out.println(aY);
+                CrystalGrassBlock crystalGrassBlock = new CrystalGrassBlock(new Point3D(x * World.getInstance().size + 1, aY , z * World.getInstance().size + 1), World.getInstance().size);
 
                 int col = (int)(Math.random() * 100);
 
@@ -66,7 +70,7 @@ public class World {
                     double height = (Math.random() * 6) + 3;
                     for(int y = 1; y<=height; y++){
                         Shape c;
-                        Point3D location = new Point3D(crystalGrassBlock.getLocation().getX(), crystalGrassBlock.getLocation().getY() + (y * size), crystalGrassBlock.getLocation().getZ());
+                        Point3D location = new Point3D(crystalGrassBlock.getLocation().getX(), crystalGrassBlock.getLocation().getY() + (y * size) + aY, crystalGrassBlock.getLocation().getZ());
                         if(y + 1 < height)
                             c = new CrystalBlock(location, size);
                         else
@@ -89,40 +93,6 @@ public class World {
         double x = r * Math.cos( theta );
         double y = r * Math.sin(theta );
         return new double[]{x,y};
-    }
-
-    public void regenerate(){
-        int mapSize = 10;
-        for(int x = -size * mapSize; x<size * mapSize + 1; x+=size) {
-            for (int z = 1; z < size * 100 + 1; z += size){
-                if ((Math.abs(x / size) == mapSize / 2) && z / size % 5 == 0)
-                {
-                    for (int y = 0; y <= size * 5; y += size) {
-                        Shape cube;
-                        if(y / size == 5)
-                            cube = new Pyramid(new Point3D(x,y,z),size);
-                        else
-                            cube = new Cube(new Point3D(x, y, z), size);
-
-                        int f = (int)(Math.random() * 150);
-
-                        cube.setColor(new Color(f,f,f));
-                        if(cube instanceof Pyramid){
-                            cube.setColor(new Color(150 + (int)(Math.random() * 105), (int)(Math.random() * 50), (int)(Math.random() * 50)));
-                        }
-                        cube.reinit();
-                        cubes.add(cube);
-                    }
-                }
-
-                Cube cube = new Cube(new Point3D(x, 0, z), size);
-                int f = (int)(Math.random() * 50);
-                cube.setColor(new Color(f,(int)(255.0 * ImprovedNoise.noise(x,0,z)),f));
-                cube.reinit();
-                cubes.add(cube);
-            }
-        }
-
     }
 
     public void tick(){

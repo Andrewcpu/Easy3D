@@ -33,12 +33,13 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         addMouseMotionListener(this);
     }
 
-
-    private boolean paused = false;
     @Override
     public void mouseClicked(MouseEvent e) {
-        paused = false;
 
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
 
         if(Renderer.getInstance().selectedShape != null)
             Renderer.getInstance().selectedShape.destroy();
@@ -46,13 +47,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-        paused = true;
-    }
-
-    @Override
     public void mouseReleased(MouseEvent e) {
-        paused = false;
+
     }
 
     @Override
@@ -62,7 +58,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
 
     @Override
     public void mouseExited(MouseEvent e) {
-        paused = false;
     }
 
 
@@ -103,10 +98,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         keys.remove((Integer)e.getKeyCode());
     }
 
-    private boolean up = false;
-
-    private int index = 0;
-
     private void keyboardTicks(){
         if(keys.contains(KeyEvent.VK_W)){
             Camera.getInstance().forward();
@@ -132,21 +123,19 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             Camera.getInstance().setLocation( Point3D.ORIGIN.clone());
         }
         if(keys.contains(KeyEvent.VK_G)){
-            World.getInstance().generateIsland(Camera.getInstance().getLocation(), 15);
+            World.getInstance().generate();
         }
         if(keys.contains(KeyEvent.VK_H)){
             World.getInstance().refreshVisibility();
         }
     }
 
+    private Font font = new Font("Calibri", Font.PLAIN, 16);
+
     @Override
     public void paint(Graphics g){
+        g.setFont(font);
         keyboardTicks();
         Renderer.getInstance().render(g);
-        index++;
-        if(index >= 400) {
-            up = !up;
-            index = 0;
-        }
     }
 }

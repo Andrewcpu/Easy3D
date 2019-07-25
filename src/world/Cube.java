@@ -4,8 +4,6 @@ import constructs.Hitbox;
 import constructs.Point3D;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Cube extends Shape{
@@ -154,16 +152,27 @@ public class Cube extends Shape{
 
     public void configureFaceVisibility(){
         if(getFaces() == null) return;
+        boolean allSidesVisible = true;
         for(Face face : getFaces()){
-            Point3D slope = face.getDirection().slope(face.getDirection());
-            if(face.getParent().getHitbox() == null) continue;
+            Point3D slope = face.getDirection().slope(face.getDirection()).multiply(2);
             Shape shape = World.getInstance().getShapeAt(face.getAveragePoint().add(slope));
-            face.setVisible(shape == null || shape == this);
+            face.setVisible(shape == null || allSidesVisible);
         }
     }
 
     public Face[] getFaces() {
         return faces;
+    }
+
+    @Override
+    public void destroy(){
+        for(Face face : getFaces()){
+            Point3D slope = face.getDirection().slope(face.getDirection()).multiply(2);
+            Shape shape = World.getInstance().getShapeAt(face.getAveragePoint().add(slope));
+            if(shape != null)
+                shape.update();
+        }
+        super.destroy();
     }
 
     public void rotate(double x, double y){

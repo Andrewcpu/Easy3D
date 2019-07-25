@@ -64,12 +64,11 @@ public class CrystalGrassBlock extends CrystalBlock {
         reinit();
     }
 
-    private int life = 0;
+
     @Override
-    public void tick(){
-        life++;
+    public void update(){
         findClosestCrystal();
-        super.tick();
+        super.update();
     }
 
 }
