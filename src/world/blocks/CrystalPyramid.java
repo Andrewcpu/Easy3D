@@ -1,7 +1,7 @@
 package world.blocks;
 
 import constructs.Point3D;
-import world.Pyramid;
+import world.shapes.Pyramid;
 import world.World;
 
 import java.awt.*;

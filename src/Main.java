@@ -29,6 +29,7 @@ public class Main extends JFrame {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(()->{
             canvas.repaint();
             world.tick();
+            world.worldStateZ+=0.05;
         }, 20, 20, TimeUnit.MILLISECONDS);
     }
 }

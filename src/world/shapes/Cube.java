@@ -1,12 +1,15 @@
-package world;
+package world.shapes;
 
 import constructs.Hitbox;
 import constructs.Point3D;
+import world.FaceDirection;
+import world.Shape;
+import world.World;
 
 import java.awt.*;
 
 
-public class Cube extends Shape{
+public class Cube extends world.Shape {
     private Point3D location;
     private double width;
 
@@ -155,7 +158,7 @@ public class Cube extends Shape{
         boolean allSidesVisible = true;
         for(Face face : getFaces()){
             Point3D slope = face.getDirection().slope(face.getDirection()).multiply(2);
-            Shape shape = World.getInstance().getShapeAt(face.getAveragePoint().add(slope));
+            world.Shape shape = World.getInstance().getShapeAt(face.getAveragePoint().add(slope));
             face.setVisible(shape == null || allSidesVisible);
         }
     }
@@ -203,7 +206,7 @@ public class Cube extends Shape{
 
     @Override
     public void update(){
-        configureFaceVisibility();
+        //configureFaceVisibility();
     }
 
     @Override

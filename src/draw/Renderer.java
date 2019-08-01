@@ -4,13 +4,13 @@ import constructs.Camera;
 import constructs.Point3D;
 import world.*;
 import world.Shape;
+import world.blocks.CrystalGrassBlock;
+import world.shapes.Face;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Renderer {
 
@@ -105,7 +105,7 @@ public class Renderer {
         int minSize = 25; // amount of pixels (1 block = 1 pixel) (player located at 25x25)
 
 
-        int mapSize = 5;
+        int mapSize = 4;
 
         Point3D player = Camera.getInstance().getLocation();
 
@@ -118,12 +118,13 @@ public class Renderer {
                 Point3D p = new Point3D(x, 0, z);
                 Shape shape = World.getInstance().getHighestShapeAt(p.getX(),p.getZ());
                 Color c;
+
                 if(shape == null){
                     c = Color.CYAN;
                 }
                 else{
                     c = shape.getColor();
-                }
+                  }
                 g.setColor(c);
                 g.fillRect(xx,yy,mapSize,mapSize);
                 yy+=mapSize;
@@ -146,6 +147,9 @@ public class Renderer {
 
         g.setColor(Color.WHITE);
         g.drawString(Camera.getInstance().getLocation().clone().divide(World.getInstance().size).toString(), 10, minSize * mapSize + 20);
+
+
+        g.drawString(((int)Math.toDegrees(Camera.getInstance().getRotationHorizontal())) + "", Canvas.getInstance().getWidth() / 2,10);
 
     }
 

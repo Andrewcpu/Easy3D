@@ -1,7 +1,9 @@
-package world;
+package world.shapes;
 
 import constructs.Camera;
 import constructs.Point3D;
+import world.FaceDirection;
+import world.Shape;
 
 import java.awt.*;
 
@@ -11,7 +13,7 @@ public class Face implements Comparable<Face>{
 
     private Color color;
 
-    private Shape parent = null;
+    private world.Shape parent = null;
 
     private boolean visible = true;
 
@@ -21,11 +23,11 @@ public class Face implements Comparable<Face>{
         this.color = color;
     }
 
-    public Shape getParent() {
+    public world.Shape getParent() {
         return parent;
     }
 
-    public void setParent(Shape parent) {
+    public void setParent(world.Shape parent) {
         this.parent = parent;
     }
 
@@ -91,7 +93,7 @@ class FaceBuilder{
     private FaceDirection faceDirection;
     private Point3D[] nodes;
     private Color color = null;
-    private Shape shape = null;
+    private world.Shape shape = null;
     public FaceBuilder() {
     }
 

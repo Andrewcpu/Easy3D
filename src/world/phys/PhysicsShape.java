@@ -84,9 +84,9 @@ public class PhysicsShape extends Shape {
                     falling = false;
                 }
             }
-            else
+            else {
                 speed = 1;
-
+            }
         }
     }
 

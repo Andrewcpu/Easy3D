@@ -6,6 +6,8 @@ import constructs.Point3D;
 import world.blocks.CrystalBlock;
 import world.blocks.CrystalGrassBlock;
 import world.blocks.CrystalPyramid;
+import world.shapes.Cube;
+import world.shapes.Pyramid;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,6 +22,11 @@ public class World {
     private static World instance = null;
 
     public int size = 25;
+
+
+    public double worldStateX = 0;
+    public double worldStateY = 0;
+    public double worldStateZ = 0;
 
     public Point3D gravity = new Point3D(0,16,0);
 
@@ -52,25 +59,22 @@ public class World {
     public void generate(){
         cubes.clear();
         crystalPyramids.clear();
-        int mapSize = 10;
+        int mapSize = 12;
 
         for(int x = -mapSize; x<mapSize; x++){
             for(int z = -mapSize; z<mapSize; z++){
-                double aY = new OpenSimplexNoise().eval(x/5.0,z/5.0) * World.getInstance().size;
-                System.out.println(aY);
+                double aY = eval(new Point3D(x * World.getInstance().size, 0, z * World.getInstance().size));
                 CrystalGrassBlock crystalGrassBlock = new CrystalGrassBlock(new Point3D(x * World.getInstance().size + 1, aY , z * World.getInstance().size + 1), World.getInstance().size);
 
-                int col = (int)(Math.random() * 100);
 
-                crystalGrassBlock.setColor(new Color(col,col * 2,col));
                 crystalGrassBlock.reinit();
                 cubes.add(crystalGrassBlock);
 
-                if(Math.random() < 0.02){
-                    double height = (Math.random() * 6) + 3;
+                if(Math.random() < 0.0){
+                    double height = (Math.random() * 4) + 3;
                     for(int y = 1; y<=height; y++){
                         Shape c;
-                        Point3D location = new Point3D(crystalGrassBlock.getLocation().getX(), crystalGrassBlock.getLocation().getY() + (y * size) + aY, crystalGrassBlock.getLocation().getZ());
+                        Point3D location = new Point3D(crystalGrassBlock.getLocation().getX(), crystalGrassBlock.getLocation().getY() + (y * size) , crystalGrassBlock.getLocation().getZ());
                         if(y + 1 < height)
                             c = new CrystalBlock(location, size);
                         else
@@ -94,13 +98,36 @@ public class World {
         double y = r * Math.sin(theta );
         return new double[]{x,y};
     }
+    private OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise();
+
+    private final double magicConstant = 3.5; // somehow makes things work nicely in eval()
+    private final double magicScaleConstant = 8.0 ; // somehow makes things work nicely in eval()
+
+    public double eval(Point3D loc){
+        double aY = magicConstant * openSimplexNoise.eval(loc.getX() / World.getInstance().size / magicScaleConstant + worldStateX,worldStateY, loc.getZ() / World.getInstance().size/magicScaleConstant + worldStateZ) * World.getInstance().size;
+        return aY;
+    }
 
     public void tick(){
-        for(Shape shape : cubes){
-            shape.tick();
+        for(Shape s : cubes) {
+            if (s instanceof CrystalGrassBlock) {
+                CrystalGrassBlock shape = (CrystalGrassBlock)s;
+
+                shape.getLocation().setY(eval(shape.getLocation()));
+                double f = eval(shape.getLocation()) / magicConstant / World.getInstance().size;
+                f *= 255;
+                if (f < 0) {
+                    f *= -1;
+                    shape.setColor(new Color((int) f, (int)(f/2), 255-(int)f));
+                } else
+                    shape.setColor(new Color((int)(f/2), (int) f, 255-(int)f));
+                shape.reinit();
+                shape.tick();
+            }
         }
         Camera.getInstance().tick();
-        refreshVisibility();
+        Camera.getInstance().getLocation().setY(eval(Camera.getInstance().getLocation()) + 100);
+        //refreshVisibility();
     }
 
     public List<Shape> getCubes() {
@@ -124,10 +151,13 @@ public class World {
         return getShapeAt(new Point3D(x,y,z));
     }
 
+    public Shape getHighestShapeAt(Point3D point3D){
+        return getHighestShapeAt(point3D.getX(),point3D.getZ());
+    }
     public Shape getHighestShapeAt(double x, double z){
         Shape highest = null;
 
-        for(Shape shape : cubes.stream().filter(shape -> shape.contains(new Point3D(x, shape.getLocation().getY() + 1, z))).collect(Collectors.toList())){
+        for(Shape shape : cubes.parallelStream().filter(shape -> shape.contains(new Point3D(x, shape.getLocation().getY() + 1, z))).collect(Collectors.toList())){
 
             if(highest == null || shape.getLocation().getY() > highest.getLocation().getY()){
                     highest = shape;
@@ -152,7 +182,7 @@ public class World {
                 }
             }
         }
-        refreshVisibility();
+        //refreshVisibility();
     }
 
 

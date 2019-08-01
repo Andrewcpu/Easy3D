@@ -2,10 +2,9 @@ package world;
 
 import constructs.Hitbox;
 import constructs.Point3D;
+import world.shapes.Face;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class Shape {
 

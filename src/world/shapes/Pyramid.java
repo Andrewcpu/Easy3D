@@ -1,10 +1,9 @@
-package world;
+package world.shapes;
 
 import constructs.Hitbox;
 import constructs.Point3D;
+import world.FaceDirection;
 import world.phys.PhysicsShape;
-
-import java.awt.*;
 
 public class Pyramid extends PhysicsShape {
 

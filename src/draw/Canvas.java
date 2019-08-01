@@ -2,7 +2,6 @@ package draw;
 
 import constructs.Camera;
 import constructs.Point3D;
-import world.Cube;
 import world.World;
 
 import javax.swing.*;
@@ -128,6 +127,26 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         if(keys.contains(KeyEvent.VK_H)){
             World.getInstance().refreshVisibility();
         }
+        double speed = 0.05;
+        if(keys.contains(KeyEvent.VK_UP)){
+            World.getInstance().worldStateZ+=speed;
+        }
+        if(keys.contains(KeyEvent.VK_DOWN)){
+            World.getInstance().worldStateZ-=speed;
+        }
+        if(keys.contains(KeyEvent.VK_LEFT)){
+            World.getInstance().worldStateX-=speed;
+        }
+        if(keys.contains(KeyEvent.VK_RIGHT)){
+            World.getInstance().worldStateX+=speed;
+        }
+        if(keys.contains(KeyEvent.VK_O)){
+            World.getInstance().worldStateY+=speed;
+        }
+        if(keys.contains(KeyEvent.VK_P)){
+            World.getInstance().worldStateY-=speed;
+        }
+
     }
 
     private Font font = new Font("Calibri", Font.PLAIN, 16);
