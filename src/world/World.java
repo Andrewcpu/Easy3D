@@ -126,7 +126,7 @@ public class World {
             }
         }
         Camera.getInstance().tick();
-        Camera.getInstance().getLocation().setY(eval(Camera.getInstance().getLocation()) + 100);
+        Camera.getInstance().getLocation().setY(eval(Camera.getInstance().getLocation()) + 150);
         //refreshVisibility();
     }
 
