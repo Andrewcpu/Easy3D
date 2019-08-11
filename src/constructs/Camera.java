@@ -16,8 +16,8 @@ public class Camera {
 
     private Point3D location;
     private double rotationVertical = 0; // radians
-    private double rotationHorizontal = 0; // radians
-    private double speed = 10; //px per tick
+    private double rotationHorizontal = Math.PI; // radians
+    private double speed = 5; //px per tick
 
     public Camera(Point3D location) {
         instance = this;
@@ -54,9 +54,9 @@ public class Camera {
 
 
     private void move(double x, double y, double z){
-        Shape s = World.getInstance().getShapeAt(location.clone().add(x,y - 40 ,z));
-        if(s == null)
-            this.location.add(x,y,z);
+//        Shape s = World.getInstance().getShapeAt(location.clone().add(x,y - 40 ,z));
+//        if(s == null)
+        this.location.add(x,y,z);
 
     }
 
@@ -117,4 +117,11 @@ public class Camera {
         normalize();
     }
 
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 }

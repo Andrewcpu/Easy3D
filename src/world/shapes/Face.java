@@ -75,6 +75,8 @@ public class Face implements Comparable<Face>{
 
     @Override
     public int compareTo(Face o) {
+        if(o == null || Camera.getInstance() == null) return 0;
+
         int d = Double.compare(getAveragePoint().distance(Camera.getInstance().getLocation()), o.getAveragePoint().distance(Camera.getInstance().getLocation()));
         return d;
     }

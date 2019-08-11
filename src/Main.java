@@ -1,4 +1,5 @@
 import constructs.Camera;
+import constructs.KeyboardManager;
 import constructs.Point3D;
 import draw.Canvas;
 import draw.Renderer;
@@ -16,8 +17,10 @@ public class Main extends JFrame {
     public Main(){
         setTitle("RENDER");
         World world = new World();
-        Camera camera = new Camera(new Point3D(2,85,-6)); // both the camera
-        Renderer renderer = new Renderer();                         // and the renderer have singletons, unsure why im storing them here. guess we'll find out.
+        Camera camera = new Camera(new Point3D(0,0,World.getInstance().size * 10)); // both the camera
+        Renderer renderer = new Renderer();
+        KeyboardManager manager = new KeyboardManager();
+        // and the renderer have singletons, unsure why im storing them here. guess we'll find out.
         Canvas canvas = new Canvas(world);
         setBounds(0,0,Canvas.DIMENSION,Canvas.DIMENSION);
         canvas.setBounds(getBounds());
@@ -29,7 +32,7 @@ public class Main extends JFrame {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(()->{
             canvas.repaint();
             world.tick();
-            world.worldStateZ+=0.05;
+           // world.worldStateY+=0.07;
         }, 20, 20, TimeUnit.MILLISECONDS);
     }
 }

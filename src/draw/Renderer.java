@@ -40,6 +40,7 @@ public class Renderer {
         List<Face> faces = new ArrayList<>();
         for(Shape cube : World.getInstance().getCubes())
             faces.addAll(Arrays.asList(cube.getFaces()));
+        faces.removeIf(f -> f == null);
 
         Object[] arr = faces.toArray();
         if(arr == null) return;
@@ -79,9 +80,11 @@ public class Renderer {
 
             if(face.getAveragePoint().distance(Camera.getInstance().getLocation()) > RENDER_DISTANCE) opacity = 0;
 
-            g.setColor(getOpacityChange(face.getColor(), opacity));
-
+//            g.setColor(getOpacityChange(face.getColor(), opacity));
+            g.setColor(face.getColor());
             g.fillPolygon(polygon);
+            g.setColor(Color.BLACK);
+            g.drawPolygon(polygon);
 
             if(polygon.contains(Canvas.DIMENSION / 2, Canvas.DIMENSION / 2)){
                 selectedFace = face;
@@ -98,7 +101,7 @@ public class Renderer {
         g.drawLine(Canvas.DIMENSION / 2 - 10, Canvas.DIMENSION / 2, Canvas.DIMENSION / 2 + 10, Canvas.DIMENSION / 2);
         g.drawLine(Canvas.DIMENSION / 2, Canvas.DIMENSION / 2 - 10, Canvas.DIMENSION /2, Canvas.DIMENSION / 2 + 10);
 
-        drawMinimap(g);
+      //  drawMinimap(g);
     }
 
     public void drawMinimap(Graphics g){

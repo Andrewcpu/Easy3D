@@ -1,12 +1,14 @@
 package draw;
 
 import constructs.Camera;
+import constructs.KeyboardManager;
 import constructs.Point3D;
 import world.World;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     public static int DIMENSION = 750;
 
 
-    private List<Integer> keys = new ArrayList<>();
 
 
     public static Canvas getInstance() {
@@ -87,63 +88,74 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(keys.contains(e.getKeyCode())) return;
-        keys.add(e.getKeyCode());
+        KeyboardManager.getInstance().keyPress(e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if(!keys.contains(e.getKeyCode())) return;
-        keys.remove((Integer)e.getKeyCode());
+        KeyboardManager.getInstance().keyRelease(e.getKeyCode());
+
     }
 
+
     private void keyboardTicks(){
-        if(keys.contains(KeyEvent.VK_W)){
+        double groundSpeed = 0.05;
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_W)){
             Camera.getInstance().forward();
+//            World.getInstance().forward();
         }
-        if(keys.contains(KeyEvent.VK_A)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_A)){
             Camera.getInstance().left();
+
+
+
         }
-        if(keys.contains(KeyEvent.VK_D)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_D)){
             Camera.getInstance().right();
+
+
+
         }
-        if(keys.contains(KeyEvent.VK_S)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_S)){
             Camera.getInstance().backward();
+
+
+
         }
-        if(keys.contains(KeyEvent.VK_SHIFT)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_SHIFT)){
             Camera.getInstance().down();
         }
-        if(keys.contains(KeyEvent.VK_SPACE)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_SPACE)){
             Camera.getInstance().up();
         }
-        if(keys.contains(KeyEvent.VK_R)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_R)){
             Camera.getInstance().setRotationVertical(0);
             Camera.getInstance().setRotationHorizontal(0);
-            Camera.getInstance().setLocation( Point3D.ORIGIN.clone());
+            Camera.getInstance().setLocation( new Point3D(0,0,-5));
         }
-        if(keys.contains(KeyEvent.VK_G)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_G)){
             World.getInstance().generate();
         }
-        if(keys.contains(KeyEvent.VK_H)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_H)){
             World.getInstance().refreshVisibility();
         }
         double speed = 0.05;
-        if(keys.contains(KeyEvent.VK_UP)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_UP)){
             World.getInstance().worldStateZ+=speed;
         }
-        if(keys.contains(KeyEvent.VK_DOWN)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_DOWN)){
             World.getInstance().worldStateZ-=speed;
         }
-        if(keys.contains(KeyEvent.VK_LEFT)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_LEFT)){
             World.getInstance().worldStateX-=speed;
         }
-        if(keys.contains(KeyEvent.VK_RIGHT)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_RIGHT)){
             World.getInstance().worldStateX+=speed;
         }
-        if(keys.contains(KeyEvent.VK_O)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_O)){
             World.getInstance().worldStateY+=speed;
         }
-        if(keys.contains(KeyEvent.VK_P)){
+        if(KeyboardManager.getInstance().isPressing(KeyEvent.VK_P)){
             World.getInstance().worldStateY-=speed;
         }
 
@@ -152,9 +164,17 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     private Font font = new Font("Calibri", Font.PLAIN, 16);
 
     @Override
-    public void paint(Graphics g){
+    public void paint(Graphics gr){
+        BufferedImage img = new BufferedImage(DIMENSION, DIMENSION, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = img.getGraphics();
+
+        Graphics2D graphics2D = (Graphics2D) g;
+        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
         g.setFont(font);
         keyboardTicks();
         Renderer.getInstance().render(g);
+        gr.drawImage(img, 0, 0 , getWidth(), getHeight(), null);
     }
 }
